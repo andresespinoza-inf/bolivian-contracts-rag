@@ -1,0 +1,32 @@
+jurisdiction: BO
+document_type: contrato
+
+# Ordinal-word clause markers, e.g. "PRIMERA (PARTES).-", "DÉCIMA (CONFORMIDAD).-"
+# Deliberately NOT requiring the closing "(...)" / ".-" suffix on the same
+# line: real PDF text extraction wraps long headings across lines (e.g.
+# "SEXTA (OBLIGACIONES" / "DE LAS PARTES).-"), so the trigger is just the
+# uppercase ordinal word anchored at line start with a word boundary.
+# Matching is intentionally case-SENSITIVE (compiled without IGNORECASE)
+# so an in-sentence lowercase mention ("la cláusula segunda") can never
+# false-trigger a new chunk boundary.
+markers:
+  clausula:
+    pattern: '^\s*(PRIMERA|SEGUNDA|TERCERA|CUARTA|QUINTA|SEXTA|S[EÉ]PTIMA|OCTAVA|NOVENA|D[EÉ]CIM[OA](\s+(PRIMERA|SEGUNDA|TERCERA|CUARTA|QUINTA))?)\b'
+
+# No separate "antecedente/expositivo" section in this jurisdiction's contract
+# style observed so far — the document goes straight into numbered clauses.
+# Left unconfigured on purpose (see ADR 3.1): a jurisdiction's config should
+# only declare the markers it actually has evidence for.
+
+referencia_cruzada:
+  pattern: '(cl[aá]usula\s+(primera|segunda|tercera|cuarta|quinta|sexta|s[eé]ptima|octava|novena|d[eé]cima)|art[ií]culo\s+\d+)'
+
+sub_markers:
+  # Priority order matters: tried top to bottom before falling back to a
+  # forced token-window split.
+  - name: numeral
+    pattern: '^\s*\d+\.\d+\.-'
+  - name: inciso
+    pattern: '^\s*[a-z]\)'
+
+token_limit_before_split: 500

@@ -1,0 +1,38 @@
+jurisdiction: BO
+document_type: ley
+
+markers:
+  # Not requiring the trailing ".-" on the same line, for consistency with
+  # the contract configs (this .txt source happens to always have it on
+  # one line, but the engine shouldn't rely on that).
+  articulo:
+    pattern: '^\s*Art[ií]culo\s+\d+°?\b'
+
+# Section is a single intermediate level in our schema (ADR 2.2), so all of
+# these — markdown-style headers the user added, plus the Civil Code's own
+# Título/Capítulo/Sección/Subsección markers — are treated as flat Section
+# boundaries. We deliberately do NOT try to model a 4-level legal hierarchy
+# (Título > Capítulo > Sección > Subsección) inside a single optional
+# Section field; that would be over-fitting the schema to one jurisdiction's
+# code structure. A Section here just means "the chunks that follow belong
+# together under this heading" — good enough for topic grouping and retrieval.
+section_markers:
+  - pattern: '^\s*#{1,2}\s+.+'          # user-added markdown headers
+  - pattern: '^\s*T[ií]tulo\s+[IVXLCDM]+'
+  - pattern: '^\s*Cap[ií]tulo\s+[IVXLCDM]+'
+  - pattern: '^\s*Secci[oó]n\s+[IVXLCDM]+'
+  - pattern: '^\s*Subsecci[oó]n\s+[IVXLCDM]+'
+
+referencia_cruzada:
+  pattern: 'art[ií]culo\s+\d+'
+
+sub_markers:
+  - name: numeral
+    pattern: '^\s*\d+\.\s'
+  # Roman-numeral item lists inside an article (e.g. Art. 585 I. II. III.)
+  # are still a "numeral" split, just a different glyph for the same idea —
+  # no new SplitReason needed beyond the four in the ADR schema.
+  - name: numeral
+    pattern: '^\s*[IVXLCDM]+\.\s'
+
+token_limit_before_split: 500

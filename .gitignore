@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.idea/
+.vscode/
+.DS_Store
+# Never commit real client documents or model caches
+data/private/
+*.pdf
+.cache/
+models/
+.env

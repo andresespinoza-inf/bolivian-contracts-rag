@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bolivian-contracts-rag"
+version = "0.1.0"
+description = "Structure-aware, verifiable retrieval over Bolivian (and comparable) contracts and civil-code norms"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Andres Maximiliano Espinoza Romero" }]
+keywords = ["rag", "legal-tech", "nlp", "bolivia", "information-retrieval", "contracts"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = ["pyyaml>=6.0", "rank_bm25>=0.2.2", "scikit-learn>=1.3"]
+
+[project.urls]
+Repository = "https://github.com/andresespinoza-inf/bolivian-contracts-rag"
+
+[project.optional-dependencies]
+# Real semantic models (downloads weights from Hugging Face on first use)
+models = ["sentence-transformers>=3.0"]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+include = ["contracts_rag*"]
+
+[tool.setuptools.package-data]
+contracts_rag = ["configs/*.yaml"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

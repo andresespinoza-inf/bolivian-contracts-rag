@@ -1,0 +1,36 @@
+jurisdiction: ES
+document_type: contrato
+
+markers:
+  # Roman-numeral recitals between "EXPONEN" and "CLÁUSULAS" — this is the
+  # jurisdiction/document-style where causa/antecedentes is actually visible
+  # as its own structural unit (see ADR 9: BO contracts observed so far
+  # don't have this section at all).
+  #
+  # NOT requiring "Que" on the same line: real PDF extraction puts the
+  # roman numeral alone on its own line ("I. ") and "Que la parte..." on
+  # the next line. The numeral alone, anchored at line start, is the
+  # trigger; the body (including "Que...") is captured into full_text
+  # by the normal buffering loop regardless.
+  antecedente:
+    pattern: '^\s*(I|II|III|IV|V|VI|VII|VIII|IX|X)\.\s*$'
+
+  # Covers both simple ordinals (PRIMERA, SEGUNDA, ...) and the compound
+  # form used from the 11th clause onward in this document's own style
+  # ("DÉCIMO PRIMERA", "DECIMO QUINTA" — note inconsistent accenting in
+  # the source, handled via the [EÉ] character classes). Not requiring the
+  # closing ".-" / "– " suffix on the same line, for the same line-wrap
+  # reason as BO_contrato.yaml. Case-sensitive on purpose (see that file).
+  clausula:
+    pattern: '^\s*(PRIMERA|SEGUNDA|TERCERA|CUARTA|QUINTA|SEXTA|S[EÉ]PTIMA|OCTAVA|NOVENA|D[EÉ]CIM[OA](\s+(PRIMERA|SEGUNDA|TERCERA|CUARTA|QUINTA|SEXTA|S[EÉ]PTIMA|OCTAVA))?)\b'
+
+referencia_cruzada:
+  pattern: '(expositivo\s+(I|II|III|IV|V|VI|VII)|cl[aá]usula\s+\w+|art[ií]culo\s+[\d\.]+)'
+
+sub_markers:
+  - name: numeral
+    pattern: '^\s*\d+\.\d+\.'
+  - name: inciso
+    pattern: '^\s*[a-z]\)'
+
+token_limit_before_split: 500
